@@ -1,0 +1,111 @@
+﻿Hoja;Atributo;Descripción
+Siniestros;Codigo_Accidente;Clave primaria del ipat
+Siniestros;Formulario;Número del Informe Policial de Accidente de Tránsito - IPAT
+Siniestros;Longitud;Coordenada geográfica que indica la distancia en grados decimales que hay con respecto al meridiano principal, que es el meridiano de Greenwich (0º). La longitud para Bogotá es Oeste.EPSG:4686
+Siniestros;Latitud;Coordenada geográfica que indica la distancia en grados decimales que hay con respecto a la línea del Ecuador (0º). La latitud para Bogotá es Norte.EPSG:4686
+Siniestros;Direccion;Dirección completa donde ocurrió el siniestro vial
+Siniestros;Fecha_Acc;Fecha en que ocurrió el siniestro vial (día-mes-año)
+Siniestros;AA_Acc;Año en que ocurrió el siniestro vial
+Siniestros;MM_Acc;Mes en que ocurrió el siniestro vial (Enero, Febrero, Marzo, etc)
+Siniestros;DD_Mes_Acc;Día del mes en que ocurrió el siniestro vial
+Siniestros;Dia_Semana_Acc;Día de la semana en que ocurrió el siniestro vial (Lunes, Martes, etc)
+Siniestros;Hora_Acc;Hora en que ocurrió el siniestro vial
+Siniestros;Min_Acc;Minuto en que ocurrió el siniestro vial
+Siniestros;Localidad;Nombre de la localidad del distrito capital donde ocurrió el siniestro vial
+Siniestros;Clase_Acc;Clase de accidente (Choque, atropello, Volcamiento, caída de ocupante, incendio, otro, autolesión)
+Siniestros;Elemento_Choque;"Objeto o elemento con el que el vehículo o participante chocó en el siniestro vial. Este campo solo aplica en caso de que la Clase_Acc sea ""Choque""."
+Siniestros;Tipo_Objeto_Fijo;"Especifica el tipo de objeto inmóvil con el que ocurrió el choque, en caso de que la colisión haya sido contra un objeto fijo. Este campo solo aplica si el valor de Elemento_Choque es ""Objeto Fijo"""
+Siniestros;Gravedad_Indicador_Tradicional;Gravedad del siniestro (Con Muertos, Con Heridos ó Solo daños)
+Siniestros;Gravedad_indicador_30d;Gravedad del siniestro (Con Muertos, Con Heridos ó Solo daños) tomando en cuenta los fallecimientos que ocurren dentro de los 30 días posteriores al siniestro
+Siniestros;Con_Bicicleta;Señala si en el siniestro hubo una bicicleta involucrada
+Siniestros;Con_Carga;Señala si en el siniestro hubo un vehículo de carga involucrado
+Siniestros;Con_Embriaguez;Señala si en el siniestro hubo alguna hipótesis relacionada con embriaguez
+Siniestros;Con_Huecos;Señala si en el siniestro hubo alguna hipótesis relacionada con huecos
+Siniestros;Con_Menores;Señala si en el siniestro hubo una persona menor de edad involucrada
+Siniestros;Con_Moto;Señala si en el siniestro hubo una motocicleta involucrada
+Siniestros;Con_Peaton;Señala si en el siniestro hubo un peatón involucrado
+Siniestros;Con_Persona_Mayor;Señala si en el siniestro hubo una persona mayor involucrada
+Siniestros;Con_Rutas;Señala si en el siniestro hubo alguna hipótesis relacionada con rutas
+Siniestros;Con_Tpi;Señala si en el siniestro hubo un vehículo de transporte público individual involucrado
+Siniestros;Con_Tpp;Señala si en el siniestro hubo un vehículo de transporte público de pasajeros involucrado
+Siniestros;Con_Velocidad;Señala si en el siniestro hubo alguna hipótesis relacionada con velocidad
+Siniestros;Con_Sitp;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público involucrado
+Siniestros;Con_Troncal;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal involucrado
+Siniestros;Con_Alimentador;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - alimentador involucrado
+Siniestros;Con_Zonal;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - zonal involucrado
+Siniestros;Con_Provisional;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - provisional involucrado
+Siniestros;Con_Articulado;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal articulado involucrado
+Siniestros;Con_Biarticulado;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal biarticulado involucrado
+Siniestros;Con_Padron_Dual;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - dual involucrado
+Vehiculos;Codigo_Accidente;Clave primaria del ipat
+Vehiculos;Formulario;Número del Informe Policial de Accidente de Tránsito - IPAT
+Vehiculos;Fecha_Acc;Fecha en que ocurrió el siniestro vial (día-mes-año)
+Vehiculos;AA_Acc;Año en que ocurrió el siniestro vial
+Vehiculos;Codigo_Vehiculo;Número del vehículo en cuestión
+Vehiculos;Clase;Clase de vehículo (automóvil, bus, buseta, camión, camioneta, campero, microbús, tractocamión, motocicleta, maq.agrícola, maq.industrial, bicicleta, motocarro, tracción animal, mototriciclo, cuatrimoto, remolque, semirremolque, volqueta, maq. construcción o minera, sin clase, ciclomotor, tricimoto, cuadriciclo)
+Vehiculos;Servicio;Clase de Servicio (Particular, Público, Diplomático, Oficial, Especial RNMA)
+Vehiculos;Modalidad;Modalidad transporte (pasajeros, carga, mixto) - Modalidad servicio (individual, colectivo, mercancía peligrosa, masivo, especial turismo, especial, especial escolar, por carretera, especial asalariado, mixto, especial ocasional, extradimensionada, extrapesada)
+Vehiculos;Vehiculo_Viajaba_Clasificado;Clasifica el tipo de vehículo involucrado en el siniestro, indicando si se trata de un vehículo de transporte de pasajeros, liviano, motocicleta, bicicleta, de carga, taxi, transporte especial
+Vehiculos;Tipo_SITP;Señala la tipología de la flota del Sistema Integrado de Transporte Público involucrado en el siniestro
+Vehiculos;Con_Bicicleta;Señala si en el siniestro hubo una bicicleta involucrada
+Vehiculos;Con_Carga;Señala si en el siniestro hubo un vehículo de carga involucrado
+Vehiculos;Con_Embriaguez;Señala si en el siniestro hubo alguna hipótesis relacionada con embriaguez
+Vehiculos;Con_Huecos;Señala si en el siniestro hubo alguna hipótesis relacionada con huecos
+Vehiculos;Con_Menores;Señala si en el siniestro hubo una persona menor de edad involucrada
+Vehiculos;Con_Moto;Señala si en el siniestro hubo una motocicleta involucrada
+Vehiculos;Con_Peaton;Señala si en el siniestro hubo un peatón involucrado
+Vehiculos;Con_Persona_Mayor;Señala si en el siniestro hubo una persona mayor involucrada
+Vehiculos;Con_Rutas;Señala si en el siniestro hubo alguna hipótesis relacionada con rutas
+Vehiculos;Con_Tpi;Señala si en el siniestro hubo un vehículo de transporte público individual involucrado
+Vehiculos;Con_Tpp;Señala si en el siniestro hubo un vehículo de transporte público de pasajeros involucrado
+Vehiculos;Con_Velocidad;Señala si en el siniestro hubo alguna hipótesis relacionada con velocidad
+Vehiculos;Con_Sitp;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público involucrado
+Vehiculos;Con_Troncal;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal involucrado
+Vehiculos;Con_Alimentador;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - alimentador involucrado
+Vehiculos;Con_Zonal;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - zonal involucrado
+Vehiculos;Con_Provisional;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - provisional involucrado
+Vehiculos;Con_Articulado;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal articulado involucrado
+Vehiculos;Con_Biarticulado;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal biarticulado involucrado
+Vehiculos;Con_Padron_Dual;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - dual involucrado
+Actor_vial;Codigo_Accidentado;Clave primaria de la persona lesionada o fallecida
+Actor_vial;Codigo_Accidente;Clave primaria del ipat
+Actor_vial;Formulario;Número del Informe Policial de Accidente de Tránsito - IPAT
+Actor_vial;Codigo_Vehiculo;Número del vehículo al que pertenece la persona fallecida o lesionada
+Actor_vial;Ccodigo_Victima;Consecutivo de la persona lesionada o fallecida dentro del siniestro vial (1,2,3..)
+Actor_vial;FechaAcc;Fecha en que ocurrió el siniestro vial (día-mes-año)
+Actor_vial;AnnoAcc;Año en que ocurrió el siniestro vial
+Actor_vial;mesAcc;Mes en que ocurrió el siniestro vial (Enero, Febrero, Marzo, etc)
+Actor_vial;DD_Mes_Acc;Día del mes en que ocurrió el siniestro vial
+Actor_vial;Dia_Acc;Día de la semana en que ocurrió el siniestro vial (Lunes, Martes, etc)
+Actor_vial;hourAcc;Hora en que ocurrió el siniestro vial
+Actor_vial;minuAcc;Minuto en que ocurrió el siniestro vial
+Actor_vial;Localidad;Nombre de la localidad del distrito capital donde ocurrió el siniestro vial
+Actor_vial;Edad;Años de vida de la persona lesionada
+Actor_vial;Sexo;Atributo asociado a ser hombre o mujer
+Actor_vial;Gravedad_Indicador_Tradicional;Gravedad del siniestro (Con Muertos, Con Heridos ó Solo daños)
+Actor_vial;Muerte_Posterior;Indica si la persona murió posteriormente de haber sido registrado el siniestro vial por parte del agente de tránsito o policía (S - N)
+Actor_vial;Fecha_CambioGravedad;Fecha en la que falleció la persona, posterior a la fecha de ocurrencia del siniestro.
+Actor_vial;Gravedad_Indicador_30d;Gravedad del siniestro (Con Muertos, Con Heridos ó Solo daños) tomando en cuenta los fallecimientos que ocurren dentro de los 30 días posteriores al siniestro
+Actor_vial;Condicion;Indica el rol o condición del actor vial involucrado en el siniestro, especificando si era conductor, pasajero, peatón, ciclista o motociclista.
+Actor_vial;Condicion_Especifica;Detalla de manera más precisa la condición del actor vial involucrado, especificando el tipo de vehículo o medio de transporte, como ciclista, conductor de vehículo de carga, conductor de vehículo livianos, conductor de servicio especial, conductor de taxi, conductor de TPP, conductor vehículo sin información, motociclista, pasajero bicicleta, pasajero carga, pasajero liviano, pasajero motocicleta, pasajero servicio especial, pasajero sin información, pasajero taxi, pasajero transporte pasajeros, y peatón.
+Actor_vial;Tipo_SITP;Señala la tipología de la flota del Sistema Integrado de Transporte Público involucrado en el siniestro
+Actor_vial;Con_Bicicleta;Señala si en el siniestro hubo una bicicleta involucrada
+Actor_vial;Con_Carga;Señala si en el siniestro hubo un vehículo de carga involucrado
+Actor_vial;Con_Embriaguez;Señala si en el siniestro hubo alguna hipótesis relacionada con embriaguez
+Actor_vial;Con_Huecos;Señala si en el siniestro hubo alguna hipótesis relacionada con huecos
+Actor_vial;Con_Menores;Señala si en el siniestro hubo una persona menor de edad involucrada
+Actor_vial;Con_Moto;Señala si en el siniestro hubo una motocicleta involucrada
+Actor_vial;Con_Peaton;Señala si en el siniestro hubo un peatón involucrado
+Actor_vial;Con_Persona_Mayor;Señala si en el siniestro hubo una persona mayor involucrada
+Actor_vial;Con_Rutas;Señala si en el siniestro hubo alguna hipótesis relacionada con rutas
+Actor_vial;Con_Tpi;Señala si en el siniestro hubo un vehículo de transporte público individual involucrado
+Actor_vial;Con_Tpp;Señala si en el siniestro hubo un vehículo de transporte público de pasajeros involucrado
+Actor_vial;Con_Velocidad;Señala si en el siniestro hubo alguna hipótesis relacionada con velocidad
+Actor_vial;Con_Sitp;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público involucrado
+Actor_vial;Con_Troncal;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal involucrado
+Actor_vial;Con_Alimentador;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - alimentador involucrado
+Actor_vial;Con_Zonal;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - zonal involucrado
+Actor_vial;Con_Provisional;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - provisional involucrado
+Actor_vial;Con_Articulado;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal articulado involucrado
+Actor_vial;Con_Biarticulado;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - troncal biarticulado involucrado
+Actor_vial;Con_Padron_Dual;Señala si en el siniestro hubo un vehículo del Sistema Integrado de Transporte Público - dual involucrado

@@ -1,0 +1,482 @@
+---
+title: 'PRACTICA2: Analisis de accidentes de transito en Bogotá'
+author: "Autor: Daniel Leonardo Martinez Ruiz"
+date: "Enero 2025"
+output:
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+
+---
+
+# 'PRACTICA 2: Análisis de accidentes de transito en Bogotá'
+
+## Introducción
+
+Los accidentes de tránsito constituyen un grave problema de salud
+pública a nivel mundial, causando un número significativo de muertes y
+lesiones cada año. En ciudades como Bogotá, la creciente motorización y
+la urbanización han exacerbado esta problemática, generando una
+necesidad urgente de implementar medidas para mejorar la seguridad vial.
+
+## Objetivos Especifícos
+
+El presente estudio tiene como objetivo principal identificar los
+factores de riesgo asociados a los accidentes de tránsito en Bogotá y
+localizar las zonas de mayor vulnerabilidad en la ciudad.
+
+A través del análisis de un conjunto de datos detallados sobre
+accidentes de tránsito, se busca contribuir al conocimiento sobre las
+causas de los siniestros viales y proporcionar información valiosa para
+la toma de decisiones en materia de seguridad vial.
+
+Objetivos Específicos:
+
+-   Identificar las características de los vehículos, conductores y vías
+    involucradas en los accidentes con mayor frecuencia.
+
+-   Evaluar la relación entre la gravedad de los accidentes y factores
+    como la hora del día, el día de la semana y las condiciones
+    climáticas.
+
+-   Localizar los puntos negros de accidentalidad en la ciudad.
+
+-   Proponer recomendaciones para mejorar la seguridad vial en Bogotá.
+
+Este estudio se centrará en el análisis de datos de accidentes de
+tránsito ocurridos en Bogotá durante el período comprendido en el
+año2023. El área de estudio se limitará al territorio urbano de la
+ciudad.
+
+## Justificación
+
+Comprender las causas de los accidentes de tránsito es fundamental para
+diseñar e implementar estrategias efectivas de prevención. Los
+resultados de este estudio permitirán identificar las áreas prioritarias
+para la intervención, optimizar el uso de los recursos y reducir el
+número de víctimas de accidentes de tránsito en Bogotá.
+
+#### Estructura del Documento
+
+En las siguientes secciones se presentará el marco teórico, los
+materiales y métodos utilizados, los resultados obtenidos y una
+discusión de los hallazgos. Finalmente, se presentarán las conclusiones
+y recomendaciones para futuras investigaciones.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+```{r setup, include=FALSE}
+# Limpiar el Environment
+remove(list=ls())
+
+# Cargar el paquete task Chedule
+install.packages("taskscheduleR", dependencies = TRUE)
+
+# Instalar paquetes (si fuera necesario). Comentar estas líneas tras la primera instalación 
+install.packages("dbscan")
+install.packages(c("rpart", "rpart.plot", "caret"))
+install.packages("skimr")
+install.packages("janitor")
+install.packages("gt")
+install.packages("randomForest")
+
+# ---- Carga de librerías ----
+library(readxl)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(janitor)
+library(ggplot2)
+library(gt)
+library(lubridate)
+library(cluster)
+library(factoextra)
+library(scales)
+library(dbscan)
+library(caret)
+library(rpart)
+library(rpart.plot)
+library(randomForest)
+library(skimr)   
+
+```
+
+```{r setup, include=FALSE}
+
+# Ruta del directorio de trabajo
+getwd()
+
+
+# Definir el usuario y directorios
+user_daniel = Sys.getenv("OneDrive")
+user_daniel = gsub ("\\\\", "/", user_daniel)
+
+direccion1 = paste(user_daniel,"/Documents/tipologia de datos/data", sep = "")
+direccion2 = paste(user_daniel,"/Documents/tipologia de datos/out", sep = "")
+
+# Direccionar el directorio de trabajo
+setwd(direccion1)
+
+# Lamar a las bases de datos
+siniestros <- read.csv("Siniestros.csv", sep = ";", stringsAsFactors = FALSE)
+vehiculos <- read.csv("Vehiculos.csv", sep = ";", stringsAsFactors = FALSE)
+actor_vial <- read.csv("Actor_vial.csv", sep = ";", stringsAsFactors = FALSE)
+
+
+# Exploración inicial
+head(siniestros)
+head(vehiculos)
+head(actor_vial)
+```
+
+## Metodología y tratamiento de los datos
+
+### Descripción de las variables
+
+La siguiente tabla presenta una descripción detallada de las variables
+utilizadas en este estudio. Cada variable se clasifica según su tipo
+(numérica, categórica, ordinal) y se describe su significado e
+importancia para el análisis.
+
+Las variables espaciales (longitud y latitud) permiten realizar análisis
+geográficos para identificar patrones espaciales en la ocurrencia de
+accidentes.
+
+Las variables relacionadas con los vehículos y los actores viales
+proporcionan información sobre las características de los vehículos
+involucrados y las personas afectadas.
+
+Finalmente, las variables de identificación permiten relacionar los
+diferentes registros y realizar un análisis más completo.
+
+```{r setup, include=FALSE}
+
+# Crear un data frame con la información de las variables
+variables <- data.frame(
+  Variable = c("Fecha_Acc", "Hora_Accidente", "Dia_Semana_Acc", "Longitud", "Latitud", "Direccion", "Zona", "Clase", "Servicio", "Sistema_Transporte", "Rol_Actor", "Condicion", "Edad", "Genero", "Codigo_Accidente", "Codigo_Vehiculo", "Codigo_Accidentado", "Condicion_Climatica", "Estado_Via", "Tipo_Siniestro"),
+  Tipo = c("Categórica (Fecha)", "Continua", "Categórica Ordinal", "Continua", "Continua", "Descriptiva", "Categórica", "Categórica", "Categórica", "Binaria", "Categórica", "Categórica Ordinal", "Continua", "Categórica", "Nominal", "Nominal", "Nominal", "Categorical", "Categorical", "Categorical"),
+  Descripción = c(
+    "Fecha exacta del accidente",
+    "Hora del día en que ocurrió el siniestro",
+    "Día de la semana en que ocurrió el accidente",
+    "Coordenada geográfica que indica la distancia en grados decimales con respecto al meridiano principal",
+    "Coordenada geográfica que indica la distancia en grados decimales con respecto a la línea del Ecuador",
+    "Dirección completa donde ocurrió el siniestro vial",
+    "Barrio o zona de siniestro",
+    "Tipo de vehículo involucrado",
+    "Clase de servicio proporcionado por el vehículo",
+    "Indica si el vehículo pertenece a un sistema de transporte integrado como SITP",
+    "Rol del actor vial en el accidente",
+    "Resultado del accidente para el actor vial",
+    "Edad del actor vial en años",
+    "Género del actor vial",
+    "Identificador único del accidente",
+    "Identificador único del vehículo",
+    "Identificador único del actor vial",
+    "Condiciones climáticas al momento del accidente",
+    "Estado de la vía al momento del accidente",
+    "Tipo de siniestro"
+  ),
+  Importancia = c(
+    "Permite analizar patrones temporales",
+    "Identificar alta de accidentabilidad durante el día",
+    "Ayuda a identificar días con mayor incidencia",
+    "Análisis geoespacial",
+    "Análisis geoespacial",
+    "Ubicación específica",
+    "Análisis zonal",
+    "Características del vehículo",
+    "Tipo de servicio",
+    "Identificación de transporte público",
+    "Rol en el accidente",
+    "Gravedad del accidente",
+    "Grupos vulnerables",
+    "Diferencias de género",
+    "Unir tablas",
+    "Unir tablas",
+    "Unir tablas",
+    "Condiciones ambientales",
+    "Estado de la vía",
+    "Tipo de siniestro"
+  )
+)
+
+# Especificar la ruta para guardar el archivo CSV
+direccion2 = paste(user_daniel,"/Documents/tipologia de datos/out", sep = "")
+
+setwd(direccion2)
+
+out_file <- file.path(direccion2, "variables.csv")
+
+# Guardar el data frame como archivo CSV
+
+write.csv(variables, file = out_file, row.names = FALSE)
+
+# Confirmación de que se ha guardado correctamente
+cat("Archivo CSV guardado en: ", out_file)
+
+```
+
+        
+1)   Variables espaciales: Estas variables son fundamentales para identificar zonas de alto riesgo y diseñar intervenciones específicas para cada área.
+2)   Variables de vehículos: Al analizar las características de los vehículos involucrados, podemos identificar los tipos de vehículos más propensos a estar involucrados en accidentes y diseñar políticas de seguridad vial específicas para cada tipo de vehículo.
+3)   Variables de actores viales: Al analizar las características de los conductores, pasajeros y peatones, podemos identificar los grupos más vulnerables y diseñar programas de educación vial y prevención de accidentes dirigidos a estos grupos.
+4)   Variables de contexto: Las variables relacionadas con las condiciones climáticas y el estado de la vía permiten evaluar el impacto de estos factores en la ocurrencia de accidentes.
+
+### Limpeza del dataset
+
+Una vez identificadas las variables y sus características, el siguiente
+paso consiste en la limpieza de los datos. Este proceso es esencial para
+asegurar que el dataset sea adecuado para el análisis posterior, ya que
+los datos crudos pueden contener valores faltantes, inconsistencias o
+registros irrelevantes que podrían afectar los resultados. Por lo tanto,
+debemos plantearnos cómo modificar el dataset de manera efectiva.
+
+La clave de una limpieza de datos eficiente radica en elegir el conjunto
+de procedimientos adecuados según las características específicas de la
+base de datos. Dependiendo de la naturaleza de las variables y los
+problemas detectados, podemos optar por técnicas como la imputación de
+valores faltantes, la corrección de valores atípicos, la conversión de formatos de datos o la eliminación de columnas innecesarias.
+
+Se debe considerar, tanto la integridad como la precisión de la
+información, con el objetivo de obtener datos limpios que faciliten una
+interpretación clara y precisa durante el análisis.
+
+Dado la complejidad del dataset, dicidi hacer la limpieza en varias fases: 
+
+La fase 1, consiste en hacer una limpieza muy basica buscando los valores nulos y eliminarlos. También, se calculo el promedio para aquellas filas faltantes pero que no era calido la eliminaicón de la fila completa ya que se considera que el dato es importante. Tambien se detectaron algunos outliers y se hizo el tratamiento mediante el metodo z-scores que permite ver comportamientos de las variables vecinas y asi imputar un dato con mucha presición. 
+
+La fase 2, consiste en unir todos los dataset que se dispone del estudio de los accidentes de Bogotá en el año 2023, con el objetivo de tener la base de datos optimizada poder hacer una limpieza  detallada y no tener posteriormente comportameintos erroneos con el analisis de los datos
+
+fase 3, Una vez que tenemos el dataset consolidado, vamos a realizar varias tareas de limpieza para preparar los datos para su análisis: Eliminar columnas vacías: Esto se hace para asegurarnos de que no estamos trabajando con columnas que no aportan información. Renombrar columnas: Utilizamos la función clean_names() para asegurar que los nombres de las columnas sean legibles y no contengan espacios. Convertir variables de tipo texto (caracteres) en factores: Esto es útil para análisis de datos categóricos.
+
+
+
+```{r setup, include=FALSE}
+
+# ───────────────────────────────
+# 1️⃣ Consolidación del dataset
+# ───────────────────────────────
+
+# Unir datasets en uno solo para facilitar la limpieza
+siniestros_consolidado <- siniestros %>%
+  inner_join(vehiculos %>% distinct(Codigo_Accidente, .keep_all = TRUE), by = "Codigo_Accidente") %>%
+  inner_join(actor_vial %>% distinct(Codigo_Accidente, .keep_all = TRUE), by = "Codigo_Accidente")
+
+# ───────────────────────────────
+# 2️⃣ Limpieza y Normalización
+# ───────────────────────────────
+
+limpiar_datos <- function(dataset) {
+  dataset %>%
+    select(where(~ !all(is.na(.)))) %>%  # Eliminar columnas completamente vacías
+    clean_names() %>%  # Renombrar columnas para evitar problemas con espacios
+    mutate(across(where(is.character), as.factor))  # Convertir caracteres a factores
+}
+
+detectar_outliers <- function(x) {
+  z_scores <- scale(x)
+  outliers <- which(abs(z_scores) > 3)
+  if(length(outliers) > 0 && length(outliers) < length(x)) {
+    x[outliers] <- max(x[-outliers], na.rm = TRUE)
+  }
+  return(x)
+}
+
+gestionar_na <- function(dataset) {
+  dataset %>%
+    mutate(across(where(is.numeric), ~ ifelse(is.na(.), median(., na.rm = TRUE), .)))
+}
+
+# Aplicamos la limpieza y normalización directamente sobre siniestros_consolidado
+siniestros_limpio <- siniestros_consolidado %>%
+  limpiar_datos() %>%
+  mutate(across(where(is.numeric), detectar_outliers)) %>%
+  gestionar_na()
+
+# ───────────────────────────────
+# 3️⃣ Guardado del Dataset Limpio
+# ───────────────────────────────
+
+# Definir ruta de salida
+direccion_out <- file.path(user_daniel, "/Documents/tipologia de datos/out")
+ruta_salida <- file.path(direccion_out, "siniestros_limpio.csv")
+
+# Guardar dataset limpio
+write.csv(siniestros_limpio, file = ruta_salida, row.names = FALSE)
+
+# Confirmación
+cat("Archivo CSV guardado en:", ruta_salida)
+
+
+``` 
+
+## Analisis de los datos detallada 
+
+### 1.  Modelo No Supervisado: DBSCAN
+
+```{r setup, include=FALSE}
+
+# Cargar librerías necesarias
+library(dbscan)
+library(factoextra)
+
+# ─────────────────────────────────────────────────────
+# 1️⃣ Cargar el Dataset desde "out"
+# ─────────────────────────────────────────────────────
+
+# Definir la ruta del archivo en la carpeta "out"
+direccion_out <- file.path(user_daniel, "Documents/tipologia de datos/out")
+ruta_siniestros <- file.path(direccion_out, "siniestros_limpio.csv")
+
+# Verificar si el archivo existe antes de leerlo
+if (file.exists(ruta_siniestros)) {
+  siniestros_final <- read_csv(ruta_siniestros)
+  cat("Archivo cargado correctamente desde:", ruta_siniestros, "\n")
+} else {
+  stop("Error: No se encontró el archivo 'siniestros_limpio.csv' en la carpeta 'out/'.")
+}
+
+# ─────────────────────────────────────────────────────
+# 2️⃣ Preparación de datos numéricos
+# ─────────────────────────────────────────────────────
+
+# Seleccionar solo variables numéricas
+datos_numericos <- siniestros_final %>%
+  select(where(is.numeric))
+
+# Eliminar filas con NA, NaN o Inf
+datos_numericos <- datos_numericos %>%
+  filter_all(all_vars(!is.na(.) & !is.nan(.) & !is.infinite(.)))
+
+# Normalizar los datos
+datos_norm <- scale(datos_numericos)
+
+# Convertir los datos a una matriz numérica
+datos_norm <- as.matrix(datos_norm)
+
+# Asegurarse de que no haya NA, NaN o Inf después de la normalización
+datos_norm <- datos_norm[complete.cases(datos_norm), ]
+
+# ─────────────────────────────────────────────────────
+# 3️⃣ Ajustar parámetro k en kNNdistplot
+# ─────────────────────────────────────────────────────
+
+# Verificar el tamaño de los datos
+n_filas <- nrow(datos_norm)
+
+# Ajustar k si el número de filas es menor que 5
+k_value <- min(5, n_filas - 1)  # Aseguramos que k no sea mayor que el número de filas
+
+# Determinar epsilon óptimo usando el gráfico de k-distancias
+kNNdistplot(datos_norm, k = k_value)
+abline(h = 1.5, col = "red", lty = 2) # Ajustar el valor óptimo manualmente
+
+# ─────────────────────────────────────────────────────
+# 4️⃣ Aplicar DBSCAN para agrupamiento
+# ─────────────────────────────────────────────────────
+
+# Ajustar DBSCAN con los parámetros adecuados
+dbscan_result <- dbscan(datos_norm, eps = 1.5, minPts = 5)
+siniestros_final$cluster_dbscan <- as.factor(dbscan_result$cluster)
+
+# Guardar el dataset con clusters en "out"
+write.csv(siniestros_final, "out/siniestros_clusterizado_dbscan.csv", row.names = FALSE)
+
+# Visualizar los clusters DBSCAN
+fviz_cluster(list(data = datos_norm, cluster = dbscan_result$cluster)) +
+  ggsave("out/dbscan_clusters.png")
+
+
+
+
+```
+
+
+
+### 2. Análisis Supervisado: Random Forest
+```{r setup, include=FALSE}
+
+# ─────────────────────────────────────────────────────
+# 1️⃣ Cargar el Dataset desde "out"
+# ─────────────────────────────────────────────────────
+
+# Definir la ruta del archivo en la carpeta "out"
+direccion_out <- file.path(user_daniel, "Documents/tipologia de datos/out")
+ruta_siniestros <- file.path(direccion_out, "siniestros_limpio.csv")
+
+# Verificar si el archivo existe antes de leerlo
+if (file.exists(ruta_siniestros)) {
+  siniestros_final <- read_csv(ruta_siniestros)
+  cat("Archivo cargado correctamente desde:", ruta_siniestros, "\n")
+} else {
+  stop("Error: No se encontró el archivo 'siniestros_limpio.csv' en la carpeta 'out/'.")
+}
+
+
+# ─────────────────────────────────────────────────────
+# 1️⃣ Crear variable de franja horaria
+# ─────────────────────────────────────────────────────
+
+siniestros_final <- siniestros_final %>%
+  mutate(franja_horaria = case_when(
+    Hora_Acc >= 0 & Hora_Acc < 6 ~ "Madrugada",
+    Hora_Acc >= 6 & Hora_Acc < 12 ~ "Mañana",
+    Hora_Acc >= 12 & Hora_Acc < 18 ~ "Tarde",
+    Hora_Acc >= 18 & Hora_Acc <= 23 ~ "Noche"
+  ))
+
+# ─────────────────────────────────────────────────────
+# 2️⃣ Seleccionar variables predictoras
+# ─────────────────────────────────────────────────────
+
+# Seleccionar las columnas necesarias para el modelo
+datos_modelo <- siniestros_final %>%
+  select(Longitud, Latitud, franja_horaria)
+
+# Conversión a factor
+datos_modelo$franja_horaria <- as.factor(datos_modelo$franja_horaria)
+
+# ─────────────────────────────────────────────────────
+# 3️⃣ División en conjunto de entrenamiento y prueba
+# ─────────────────────────────────────────────────────
+
+set.seed(123)
+indices <- createDataPartition(datos_modelo$franja_horaria, p = 0.8, list = FALSE)
+datos_entrenamiento <- datos_modelo[indices, ]
+datos_test <- datos_modelo[-indices, ]
+
+# ─────────────────────────────────────────────────────
+# 4️⃣ Entrenar el modelo Random Forest
+# ─────────────────────────────────────────────────────
+
+modelo_rf <- randomForest(franja_horaria ~ Longitud + Latitud, 
+                          data = datos_entrenamiento, 
+                          ntree = 500, 
+                          importance = TRUE)
+
+# Predicciones
+predicciones_rf <- predict(modelo_rf, datos_test)
+
+# Evaluación del modelo
+conf_matrix_rf <- confusionMatrix(predicciones_rf, datos_test$franja_horaria)
+print(conf_matrix_rf)
+
+# Guardar matriz de confusión
+write.csv(conf_matrix_rf$table, "out/matriz_confusion_rf.csv")
+
+# Guardar gráfico de importancia de variables
+pdf("out/importancia_variables_rf.pdf")
+varImpPlot(modelo_rf, main = "Importancia de Variables - Random Forest")
+dev.off()
+
+```
+
+### Conclusión
+Se realizaron análisis no supervisados (K-Means, K-Medoids y DBSCAN) para segmentar los siniestros. Luego, se aplicaron modelos supervisados (Random Forest y Árbol de Decisión) para predecir franjas horarias. Se generaron visualizaciones y resultados que se guardaron en la carpeta `out/`. 🚀
+
+
+
